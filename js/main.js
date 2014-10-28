@@ -1,57 +1,61 @@
 $(function() {
 
+
+//  Initializing: setting focus when page loaded, initializing input array
 $("input[name=tweets").focus();
 var inputArray = new Array();
 for(var i=0; i < $("input").length; i++) {
     var name = $("input").eq(i).attr("name");   // .eq() gives me array element at index
     inputArray[name]=0;
 }
-console.log(inputArray);
 
 
-
+// Handles Enter for inputs
+// Calculates the effects of the new input
 $("input").on("keyup", function(e) {
-    // console.log($(this).val());
     if (e.keyCode === 13) {
         var name = $(this).attr("name");
         inputArray[name] = parseInt($(this).val());
     // move focus on Enter keypress
         if ($("input").index(this) == ($("input").length-1)) {
-            alert("alert");
-            $("input")[0].focus();
+            $("input")[0].focus();  // move focus from last input to first input
         } else
             $('input')[$('input').index(this)+1].focus();   // makes Enter key move to next input like a tab
         calcRating();
-    }
-    
+    } 
 });
 
+
+
+// Handles an input losing focus (either pressing tab or clicking off input)
+// Calculates effects of the new input
 $("input").on("blur", function(e) {
     var name = $(this).attr("name");
-    if (!($(this).val()) > 0) {
+    if (!($(this).val()) > 0) {     // stops NaN from occuring when input left blank
         inputArray[name] = 0;
         $(this).val(0);
     } else
         inputArray[name] = parseInt($(this).val());
-    console.log(inputArray);
     calcRating();
 });
 
 
 
+// Loops through all inputs to calculate their weighted sum.
+// Calls meterControl() to change meter appearance.
+// Called on Enter keypress or tab press or input losing focus
 function calcRating() {
     var sum=0;
     for (var k in inputArray) {
         validateNumber(k);
-        // console.log("k: "+k);
-        console.log(k+"-> "+inputArray[k]);
-        // debugger;
         sum += setRatingValue(k);
     }
-    console.log("sum: "+sum);
     meterControl(sum);
 }
 
+
+// Validates that the number for each input is positive, makes it zero
+// if it is negative
 function validateNumber(inputName) {
     if (inputArray[inputName] < 0) {
         inputArray[inputName] = 0;
@@ -60,8 +64,8 @@ function validateNumber(inputName) {
 }
 
 
+// Sets the rating value based on the user inputs
 function setRatingValue(inputName) {
-    console.log("name: " +inputName);
     if (inputName == "curses") {
         var curseWeight = 4;
         return -(inputArray[inputName]*curseWeight);
@@ -91,9 +95,8 @@ function setRatingValue(inputName) {
 }
 
 
+// If an input is over the max it adds the max for that input to the overall rating.
 function checkMax(max, inputName, weight) {
-    console.log("max: " + max + " name: " + inputName);
-    console.log("->: " +inputArray[inputName]);
     var meterAdjFactor = 3;
     if (inputArray[inputName] >= max)
         return max / meterAdjFactor * weight;
@@ -101,8 +104,9 @@ function checkMax(max, inputName, weight) {
         return inputArray[inputName] / meterAdjFactor * weight;
 }
 
+
+// Sets the meter display based on the rating.
 function meterControl(rating) {
-    // $("#meter").css("height",rating+"em");
     $("#meter").animate({height:rating+"em"}, "fast");
 // Doing switch(true) allows you to make comparisons in the case statement.
     switch(true) {
