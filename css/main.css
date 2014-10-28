@@ -131,7 +131,6 @@ input {
 
 #content {
     width: 40em;
-    border: 2px solid red;
     margin: 0 auto;
     padding-left: 4em;
     height: 25em;
@@ -139,7 +138,6 @@ input {
 
 #statusBar {
     position: relative;
-    border: 2px solid yellow;
     display: block;
     width: 2em;
     height: 16em;
@@ -152,7 +150,7 @@ input {
     position: absolute;
     width: inherit;
     background-color: red;
-    height: 10em;
+    height: 0em;
     bottom: 0px;
 }
 
